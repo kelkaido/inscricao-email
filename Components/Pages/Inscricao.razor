@@ -1,0 +1,74 @@
+@page "/inscricao"
+@rendermode InteractiveServer
+@using SistemaInscricaoCursosBlazor.Components.Models
+
+<PageTitle>Inscrição em Cursos</PageTitle>
+
+<h1>Inscrição em Cursos</h1>
+
+@if (sucesso)
+{
+    <div class="alert alert-success" role="alert">
+        Inscrição confirmada com sucesso, @Modelo.Nome!
+    </div>
+}
+
+<EditForm Model="Modelo" FormName="InscricaoForm" OnValidSubmit="EnviarAsync">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" />
+
+    <div class="mb-3">
+        <label for="nome" class="form-label">Nome</label>
+        <InputText id="nome" class="form-control" @bind-Value="Modelo.Nome" />
+        <ValidationMessage For="() => Modelo.Nome" class="text-danger" />
+    </div>
+
+    <div class="mb-3">
+        <label for="email" class="form-label">E-mail</label>
+        <InputText id="email" class="form-control" @bind-Value="Modelo.Email" />
+        <ValidationMessage For="() => Modelo.Email" class="text-danger" />
+    </div>
+
+    <div class="mb-3">
+        <label for="idade" class="form-label">Idade</label>
+        <InputNumber id="idade" class="form-control" @bind-Value="Modelo.Idade" />
+        <ValidationMessage For="() => Modelo.Idade" class="text-danger" />
+    </div>
+
+    <div class="mb-3">
+        <label for="curso" class="form-label">Curso</label>
+        <InputSelect id="curso" class="form-select" @bind-Value="Modelo.CursoId">
+            <option value="">Selecione um curso...</option>
+            <option value="engenharia-software">Engenharia de Software</option>
+            <option value="ciencia-dados">Ciência de Dados</option>
+            <option value="desenvolvimento-web">Desenvolvimento Web</option>
+            <option value="seguranca-informacao">Segurança da Informação</option>
+        </InputSelect>
+        <ValidationMessage For="() => Modelo.CursoId" class="text-danger" />
+    </div>
+
+    <button type="submit" class="btn btn-primary" disabled="@enviando">
+        @(enviando ? "Processando..." : "Confirmar Inscrição")
+    </button>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    public InscricaoModel Modelo { get; set; } = new();
+
+    private bool enviando = false;
+    private bool sucesso = false;
+
+    private async Task EnviarAsync()
+    {
+        sucesso = false;
+        enviando = true;
+        StateHasChanged();
+
+        // Simula uma requisição assíncrona
+        await Task.Delay(2000);
+
+        enviando = false;
+        sucesso = true;
+    }
+}
